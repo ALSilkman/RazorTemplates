@@ -1,0 +1,59 @@
+﻿@model CountriesViewModel
+
+@{
+    ViewData["Title"] = "Olympic Games";
+    string Active(string filter, string selected)
+    {
+        return (filter.ToLower() == selected.ToLower()) ? "active" : "";
+    }
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <h3 class="mt-3">Game</h3>
+        <div class="list-group">
+            <a asp-action="Index"
+            asp-route-activeGame="all"
+            asp-route-activeCate="@Model.ActiveCate"
+            class="list-group-item @Model.CheckActiveGame("all")">
+            All</a>
+
+            @foreach (Game game in Model.Games)
+            {
+                <a asp-action="Index"
+                asp-route-activeGame="@game.GameId"
+                asp-route-activeCate="@Model.ActiveCate"
+                class="list-group-item @Model.CheckActiveGame(game.GameId)">
+                
+                @game.GameName</a>
+            }
+        </div>
+        <h3 class="mt-3">Category</h3>
+        <div class="list-group">
+            <a asp-action="Index"
+            asp-route-activeGame="@Model.ActiveGame"
+            asp-route-activeCate="all"
+            class="list-group-item @Model.CheckActiveGame("all")">
+            All</a>
+
+            @foreach (Category cate in Model.Categories)
+            {
+                <a asp-action="Index"
+                asp-route-activeGame="@Model.ActiveGame"
+                asp-route-activeCate="@cate.CategoryId"
+                class="list-group-item @Model.CheckActiveCate(cate.CategoryId)">
+                @cate.CategoryName</a>
+            }
+        </div>
+    </div>
+    <div class="col-md-9">
+        <ul class="list-inline">
+            @foreach (Country country in Model.Countries)
+            {
+                <li class="list-inline-item">
+                    <img src="~/images/@country.CountryFlag" alt="@country.CountryName" title="@country.CountryName | @country.Game.GameName @country.Category.CategoryName" />
+                </li>
+            }
+        </ul>
+    </div>
+</div>

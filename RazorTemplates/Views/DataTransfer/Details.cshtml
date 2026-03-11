@@ -1,0 +1,35 @@
+﻿@model RazorTemplates.Models.CountriesViewModel
+@{
+    ViewData["Title"] = "Country Details";
+}
+
+<h2 class="text-center p-2">Country Details</h2>
+
+<div class="row">
+    <div class="col">
+        <ul class="list-group text-center">
+            <li class="list-group-item">
+                <img src="~/images/@Model.Country.CountryFlag" alt="" />
+                <h3>@Model.Country.CountryName</h3></li>
+            <li class="list-group-item">
+                <h4>Game: @Model.Country.Game.GameName</h4></li>
+            <li class="list-group-item">
+                <h4>Category: @Model.Country.Category.CategoryName</h4></li>
+            <li class="list-group-item">
+                <a asp-controller="DataTransfer asp-action=" Index" "
+                   asp-route-activeGame="@Model.ActiveGame"
+                   asp-route-activeCate="@Model.ActiveCate"
+                   class="btn btn-primary">
+                    Return to Home Page
+                </a>
+                <form method="post" asp-action="Add"
+                    asp-controller="Favorites">
+                    <button type="submit" class="btn btn-primary">
+                        Add to Favorites</button>
+                    <input type="hidden" asp-for="@Model.Country.CountryId" />
+                    <input type="hidden" asp-for="@Model.Country.CountryName" />
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>

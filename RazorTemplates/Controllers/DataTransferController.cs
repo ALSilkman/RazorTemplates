@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RazorTemplates.Models;
 using System.Runtime.ExceptionServices;
 
@@ -15,6 +16,9 @@ namespace RazorTemplates.Controllers
 
         public ViewResult Index(CountriesViewModel model)
         {
+            var session = new OlympicSession(HttpContext.Session);
+            session.SetActiveGame(model.ActiveGame);
+            session.SetActiveCate(model.ActiveCate);
             model.Games = context.Games.ToList();
             model.Categories = context.Categories.ToList();
 
@@ -30,6 +34,22 @@ namespace RazorTemplates.Controllers
             model.Countries = query.ToList();
             return View(model);
         }
+
+        public ViewResult Details(string id)
+        {
+            var session = new OlympicSession(HttpContext.Session);
+            var model = new CountriesViewModel
+            {
+                Country = context.Countries
+                    .Include(t => t.Game)
+                    .Include(t => t.Category)
+                    .FirstOrDefault(t => t.CountryId == id) ?? new Country(),
+                ActiveGame = session.GetActiveGame(),
+                ActiveCate = session.GetActiveCate()
+            };
+            return View(model);
+        }
+
 
     }
 }

@@ -15,7 +15,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RazorTemplates</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -46,7 +46,45 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+
+            @* get current controller *@
+            @{
+                var controller = ViewContext.RouteData.Values["controller"].ToString();
+            }
+
+            @* show header for DataTransfer assignment *@
+            @if (controller == "DataTransfer")
+                {
+                    <h2 class="text-center p-3 bg-light border rounded mb-4">
+                        Olympic Games
+                    </h2>
+
+                @* show any message in TempData*@
+                @if (TempData.Keys.Contains("message"))
+                {
+                    <h4 class="bg-success p-2">@TempData["message"]</h4>
+                }
+
+                @* show link to Favorites page unless on Favorites page *@
+                @if (controller != "Favorites")
+                    {
+                        var session = new OlympicSession(Context.Session);
+                        int? count = session.GetMyCountryCount();
+
+                        @* if there are fave teams in session, display faves link *@
+                        @if (count.HasValue)
+                        {
+                            <h5 class="bg-info p-2">
+                                <a asp-controller="Favorites" asp-action="Index"
+                                    class="text-white">My Favorite Countries</a>
+                                <span class="badge bg-light text-black">@count</span>
+                            </h5>
+                        }
+                    }
+                }
+
+
+                @RenderBody()
         </main>
     </div>
 

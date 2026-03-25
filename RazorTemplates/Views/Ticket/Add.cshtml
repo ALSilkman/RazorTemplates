@@ -1,0 +1,43 @@
+﻿@model RazorTemplates.Models.Ticket
+
+<h2>New Ticket</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Add" method="post">
+    <div class="mb-3">
+        <label asp-for="TicketName" class="form-label">Ticket Name:</label>
+        <input asp-for="TicketName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TicketDescription" class="form-label">Description:</label>
+        <textarea asp-for="TicketDescription" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SprintNumber" class="form-label">Sprint Number:</label>
+        <select asp-for="SprintNumber" class="form-select">
+            <option value="">Select Sprint</option>
+            @for (int i=1; i<=10; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PointValue" class="form-label">Point Value:</label>
+        <input asp-for="PointValue" class="form-control" type="number" min="1" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StatusId" class="form-label">Status:</label>
+        <select asp-for="StatusId" class="form-select" asp-items="@(new SelectList(ViewBag.Statuses, "StatusId", "StatusName", Model.StatusId))">
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+

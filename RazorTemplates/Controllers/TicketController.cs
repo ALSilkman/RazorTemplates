@@ -99,5 +99,15 @@ namespace RazorTemplates.Controllers
 
             return RedirectToAction("Index", new {id = id});
         }
+
+        [HttpPost]
+        public IActionResult Create(Ticket ticket)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(ticket);
+        }
     }
 }

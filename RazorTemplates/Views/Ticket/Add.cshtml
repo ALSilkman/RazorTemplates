@@ -8,11 +8,13 @@
     <div class="mb-3">
         <label asp-for="TicketName" class="form-label">Ticket Name:</label>
         <input asp-for="TicketName" class="form-control" />
+        <span asp-validation-for="TicketName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="TicketDescription" class="form-label">Description:</label>
         <textarea asp-for="TicketDescription" class="form-control"></textarea>
+         <span asp-validation-for="TicketDescription" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -24,17 +26,20 @@
                         <option value="@i">@i</option>
                     }
         </select>
+         <span asp-validation-for="SprintNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="PointValue" class="form-label">Point Value:</label>
         <input asp-for="PointValue" class="form-control" type="number" min="1" />
+         <span asp-validation-for="PointValue" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="StatusId" class="form-label">Status:</label>
         <select asp-for="StatusId" class="form-select" asp-items="@(new SelectList(ViewBag.Statuses, "StatusId", "StatusName", Model.StatusId))">
         </select>
+         <span asp-validation-for="StatusId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Add</button>

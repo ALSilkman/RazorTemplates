@@ -7,35 +7,27 @@ namespace RazorTemplates.Controllers
 {
     public class TicketController : Controller
     {
-        private TicketContext context;
+        private readonly ITicketService _service;
 
-        public TicketController(TicketContext ctx) => context = ctx;
+        public TicketController(ITicketService service)
+        {
+            _service = service;
+        }
 
         public IActionResult Index(string id)
         {
             var filters = new Filters(id);
+
             ViewBag.Filters = filters;
-            ViewBag.Statuses = context.Statuses.ToList();
+            ViewBag.Statuses = _service.GetStatuses();
 
             ViewBag.Sprints = new SelectList(
-                Enumerable.Range(1, 10).Select(i => new { Value = i, Text = $"Sprint {i}" }),
+                Enumerable.Range(1, 10)
+                    .Select(i => new { Value = i, Text = $"Sprint {i}" }),
                 "Value", "Text",
                 filters.Sprint);
 
-            IQueryable<Ticket> query = context.Tickets.Include(t => t.status);
-
-            if (filters.HasSprint)
-            {
-                int sprint = int.Parse(filters.Sprint);
-                query = query.Where(t => t.SprintNumber == sprint);
-            }
-
-            if (filters.HasStatus)
-            {
-                query = query.Where(t => t.StatusId == filters.StatusId);
-            }
-
-            var tickets = query.OrderBy(t => t.SprintNumber).ToList();
+            var tickets = _service.GetTickets(filters);
 
             return View(tickets);
         }
@@ -43,10 +35,8 @@ namespace RazorTemplates.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Statuses = context.Statuses.ToList();
-
-            var ticket = new Ticket { StatusId = "todo" };
-            return View(ticket);
+            ViewBag.Statuses = _service.GetStatuses();
+            return View(new Ticket { StatusId = "todo" });
         }
 
         [HttpPost]
@@ -54,60 +44,33 @@ namespace RazorTemplates.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Tickets.Add(ticket);
-                context.SaveChanges();
+                _service.AddTicket(ticket);
                 return RedirectToAction("Index");
             }
-            else
-            {
-                ViewBag.Statuses = context.Statuses.ToList();
-                return View(ticket);
-            }
+
+            ViewBag.Statuses = _service.GetStatuses();
+            return View(ticket);
         }
 
         [HttpPost]
         public IActionResult Filter(string[] filter)
         {
             string id = string.Join('-', filter);
-            return RedirectToAction("Index", new { id = id });
+            return RedirectToAction("Index", new { id });
         }
 
         [HttpPost]
-        public IActionResult MarkComplete([FromRoute] string id, Ticket selected)
+        public IActionResult MarkComplete(string id, Ticket selected)
         {
-            selected = context.Tickets.Find(selected.TicketId)!;
-
-            if (selected != null)
-            {
-                selected.StatusId = "done";
-                context.SaveChanges();
-            }
-
-            return RedirectToAction("Index", new {id = id});
+            _service.MarkComplete(selected.TicketId);
+            return RedirectToAction("Index", new { id });
         }
 
         [HttpPost]
         public IActionResult DeleteComplete(string id)
         {
-            var toDelete = context.Tickets.Where(t => t.StatusId == "done").ToList();
-
-            foreach (var ticket in toDelete)
-            {
-                context.Tickets.Remove(ticket);
-            }
-            context.SaveChanges();
-
-            return RedirectToAction("Index", new {id = id});
-        }
-
-        [HttpPost]
-        public IActionResult Create(Ticket ticket)
-        {
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("Index");
-            }
-            return View(ticket);
+            _service.DeleteCompleted();
+            return RedirectToAction("Index", new { id });
         }
     }
 }

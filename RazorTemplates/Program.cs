@@ -12,7 +12,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<TicketContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TicketContext")));
 
-builder.Services.AddDbContext<CountryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CountryContext"))); 
+builder.Services.AddDbContext<CountryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CountryContext")));
+
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 var app = builder.Build();
 

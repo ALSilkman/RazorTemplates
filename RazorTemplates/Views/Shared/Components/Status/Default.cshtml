@@ -1,0 +1,16 @@
+﻿@model RazorTemplates.Models.Ticket
+
+@{
+    var cssClass = Model.StatusId switch
+    {
+        "todo" => "btn-secondary",
+        "inprogress" => "btn-warning",
+        "qa" => "btn-info",
+        "done" => "btn-success",
+        _ => "btn-light"
+    };
+}
+
+<span class="btn btn-sm @cssClass">
+    @Model.status.StatusName
+</span>

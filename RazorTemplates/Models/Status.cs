@@ -1,4 +1,6 @@
-﻿namespace RazorTemplates.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace RazorTemplates.Models
 {
     public class Status
     {

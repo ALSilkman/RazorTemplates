@@ -9,7 +9,7 @@
         <form asp-action="Filter" method="post">
             <div class="mb-3">
                 <label class="form-label">Sprint:</label>
-                <select name="filter" class="form-select" asp-items="ViewBag.Sprint">
+                <select name="filter" class="form-select" asp-items="ViewBag.Sprints">
                     <option value="all">All</option>
                 </select>
             </div>
@@ -22,7 +22,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" asp-button="primary">Filter</button>
             <a asp-action="Index" class="btn btn-secondary">Clear</a>
         </form>
     </div>
@@ -46,7 +46,9 @@
                                 <td>@ticket.TicketName</td>
                                 <td>@ticket.SprintNumber</td>
                                 <td>@ticket.PointValue</td>
-                                <td>@ticket.status.StatusName</td>
+                                <td>
+                                    @await Component.InvokeAsync("Status", new { ticket = ticket})
+                                </td>
                                 <td>
                                     @if (ticket.StatusId != "done")
                                     {
@@ -63,7 +65,7 @@
 
         <form asp-action="DeleteComplete" method="post" asp-route-id="@ViewBag.Filters.FilterString">
             <a asp-action="Add" class="btn btn-primary">Add new ticket</a>
-            <button type="submit" class="btn btn-primary">Delete completed tickets</button>
+            <button type="submit" asp-button="danger">Delete completed tickets</button>
         </form>
     </div>
 </div>

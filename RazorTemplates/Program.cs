@@ -35,6 +35,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 
+
 app.MapControllerRoute(
     name: "custom",
     pattern: "{controller}/{action}/game-{activeGame}/cate-{activeCate}");
